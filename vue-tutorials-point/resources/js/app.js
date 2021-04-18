@@ -19,7 +19,17 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// --------------------------------------------------------------------------------------------
+// thi command run to install sweetAlert (npm install -S vue-sweetalert2)
+// import VueSweetalert2 from "vue-sweetalert2";
+// Vue.use(VueSweetalert2);
 
+// import Swal from "sweetalert2";
+// Vue.use(Swal)
+
+// import Swal from 'sweetalert2/dist/sweetalert2.js'
+// import 'sweetalert2/src/sweetalert2.scss'
+// ----------------------------------------------------------------------------------------------
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))

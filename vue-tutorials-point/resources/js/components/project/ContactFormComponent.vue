@@ -1,31 +1,45 @@
 <template>
 <div class="container">
     <h2>Add Contact</h2>
-    <b-modal id="modal-prevent-closing" ref="modal" title="Submit Your Info" @show="resetModal" @hidden="resetModal" @ok="handleOk">
+    <div class="modal fade" id="post-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form action="#" @submit.prevent=" edit ? updateContact(contact.id) : createContact()">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input v-model="contact.name" type="text" name="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input v-model="contact.email" type="email" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input v-model="contact.phone" type="number" name="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button v-show="!edit" type="submit" class="btn btn-primary">New Contact</button>
+                            <button v-show="edit" type="submit" class="btn btn-primary">Update Contact</button>
+                            <button type="button" class="btn btn-danger" @click="cancelModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+<!--                    <button type="button" id="btn_text" class="btn btn-primary" onclick="createPost()">Save</button>-->
+<!--                    <button type="button" id="btn_text" class="btn btn-danger" onclick="cancelModal()">Cancel</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <form action="#" @submit.prevent=" edit ? updateContact(contact.id) : createContact()">
-            <div class="form-group">
-                <label>Name</label>
-                <input v-model="contact.name" type="text" name="name" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input v-model="contact.email" type="email" name="email" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input v-model="contact.phone" type="number" name="phone" class="form-control">
-            </div>
-            <div class="form-group">
-                <button v-show="!edit" type="submit" class="btn btn-primary">New Contact</button>
-                <button v-show="edit" type="submit" class="btn btn-primary">Update Contact</button>
-            </div>
-        </form>
-
-    </b-modal>
     <br>
     <h5>List Of Contact</h5>
-    <b-button v-b-modal.modal-prevent-closing>Add Contact</b-button>
+<!--    <b-button v-b-modal.modal-prevent-closing>Add Contact</b-button>-->
+    <b-button @click="showModal()">Add Contact</b-button>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -54,6 +68,7 @@
 </template>
 
 <script>
+
 export default {
 name: "ContactFormComponent",
     data () {
@@ -73,14 +88,25 @@ name: "ContactFormComponent",
       console.log('mounted Fetching data...');
       this.fetchContactList();
     },
+
     methods: {
+        showModal: function () {
+            this.emptyData();
+            $("#post-modal").modal('show');
+        },
+
+        cancelModal: function () {
+            $("#post-modal").modal('hide');
+        },
+
+
         fetchContactList:function(){
             console.log('Fetching contacts...');
             axios.get('api/contacts')
                 .then((response) => {
                     console.log(response.data);
                     // this.lists = response.data;
-                    this.lists = response.data.slice().reverse();;
+                    this.lists = response.data.slice().reverse();
                 }).catch((error) => {
                 console.log(error);
             });
@@ -95,6 +121,16 @@ name: "ContactFormComponent",
                 self.contact.email = '';
                 self.contact.phone = '';
                 self.edit = false;
+                $("#post-modal").modal('hide');
+
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
                 self.fetchContactList();
             })
             .catch(function (error) {
@@ -109,7 +145,7 @@ name: "ContactFormComponent",
                 self.contact.name = response.data.name;
                 self.contact.email = response.data.email;
                 self.contact.phone = response.data.phone;
-
+                $("#post-modal").modal('show');
             })
             self.edit = true;
         },
@@ -133,19 +169,58 @@ name: "ContactFormComponent",
         deleteContact: function (id) {
             console.log('Delete Contact list.....');
             let self = this;
-            axios.delete('api/contact/'+id)
-            .then( function (response) {
-                if (response){
-                    self.fetchContactList()
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete('api/contact/'+id)
+                        .then( function (response) {
+                            if (response){
+                                self.fetchContactList()
+                            }
+                        })
+                        .catch( function (error) {
+                            console.log(error);
+                        })
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
                 }
             })
-            .catch( function (error) {
-                console.log(error);
-            })
+            // axios.delete('api/contact/'+id)
+            // .then( function (response) {
+            //     if (response){
+            //         self.fetchContactList()
+            //     }
+            // })
+            // .catch( function (error) {
+            //     console.log(error);
+            // })
+        },
+
+        emptyData: function () {
+            this.contact.name = '';
+            this.contact.email = '';
+            this.contact.phone = '';
+            this.edit = false;
         }
-
-
     }
+
+    // created() {
+    //     this.fetchContactList();
+    // }
+    //
+    // updated() {
+    //     this.fe
+    // }
 }
 </script>
 
