@@ -80,47 +80,49 @@ name: "ContactFormComponent",
                name:'',
                email:'',
                phone: ''
-           }
+           },
+
        }
     },
 
-    mounted: function() {
-      console.log('mounted Fetching data...');
+    async mounted() {
+      // console.log('mounted Fetching data...');
       this.fetchContactList();
     },
 
     methods: {
-        showModal: function () {
+        async showModal() {
             this.emptyData();
             $("#post-modal").modal('show');
         },
 
-        cancelModal: function () {
+        async cancelModal() {
             $("#post-modal").modal('hide');
         },
 
 
-        fetchContactList:function(){
-            console.log('Fetching contacts...');
-            axios.get('api/contacts')
+        async fetchContactList(){
+           // let http = axios.get('api/contacts');
+           // this.lists = [...this.axiosCall(http)];
+
+
+             axios.get('api/contacts')
                 .then((response) => {
                     console.log(response.data);
                     // this.lists = response.data;
                     this.lists = response.data.slice().reverse();
                 }).catch((error) => {
                 console.log(error);
-            });
+            }).finally(() => this.loading = false);
         },
-        createContact: function () {
-            console.log('Creating contact ....');
+        async createContact() {
             let self = this;
             let params = Object.assign({}, self.contact);
-            axios.post('api/contact/store', params)
-            .then( function (){
-                self.contact.name = '';
-                self.contact.email = '';
-                self.contact.phone = '';
-                self.edit = false;
+            let http = axios.post('api/contact/store', params);
+            let response = this.axiosCall(http);
+
+            if(response != false) {
+                this.emptyData();
                 $("#post-modal").modal('hide');
 
                 Swal.fire({
@@ -132,12 +134,33 @@ name: "ContactFormComponent",
                 })
 
                 self.fetchContactList();
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+            }
+
+
+
+            // axios.post('api/contact/store', params)
+            // .then( function (){
+            //     self.contact.name = '';
+            //     self.contact.email = '';
+            //     self.contact.phone = '';
+            //     self.edit = false;
+            //     $("#post-modal").modal('hide');
+            //
+            //     Swal.fire({
+            //         position: 'top-end',
+            //         icon: 'success',
+            //         title: 'Your work has been saved',
+            //         showConfirmButton: false,
+            //         timer: 1500
+            //     })
+            //
+            //     self.fetchContactList();
+            // })
+            // .catch(function (error) {
+            //     console.log(error);
+            // })
         },
-        showContact: function (id) {
+        async showContact(id) {
             let self = this;
             axios.get('api/contact/'+id)
             .then( function (response) {
@@ -149,8 +172,8 @@ name: "ContactFormComponent",
             })
             self.edit = true;
         },
-        updateContact: function (id) {
-            console.log('Update contact '+id+'...');
+        async updateContact(id) {
+            // console.log('Update contact '+id+'...');
             let self = this;
             let params = Object.assign({}, self.contact)
             axios.patch('api/contact/'+id, params)
@@ -166,8 +189,8 @@ name: "ContactFormComponent",
             })
         },
 
-        deleteContact: function (id) {
-            console.log('Delete Contact list.....');
+        async deleteContact(id) {
+            // console.log('Delete Contact list.....');
             let self = this;
             Swal.fire({
                 title: 'Are you sure?',
@@ -206,7 +229,18 @@ name: "ContactFormComponent",
             // })
         },
 
-        emptyData: function () {
+        async axiosCall(http) {
+
+            http.then(function (response) {
+
+                    return response.data;
+
+                }).catch(function (error){
+                  return error;
+            });
+        },
+
+        async emptyData () {
             this.contact.name = '';
             this.contact.email = '';
             this.contact.phone = '';
