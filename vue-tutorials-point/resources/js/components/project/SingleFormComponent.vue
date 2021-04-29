@@ -31,8 +31,10 @@
 </template>
 
 <script>
+
 export default {
 name: "SingleFormComponent",
+
     data: function(){
         return {
             edit:false,
@@ -65,7 +67,7 @@ name: "SingleFormComponent",
             console.log('Creating contact...');
             let self = this;
             let params =Object.assign({}, self.contact);
-            axios.post('api/contact/store', params)
+            this.$http.post('api/contact/store', params)
                 .then(function(){
                     self.contact.name = '';
                     self.contact.email = '';

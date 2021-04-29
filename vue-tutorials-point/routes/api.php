@@ -44,6 +44,12 @@ Route::group(['middleware' => 'api'], function(){
 });
 
 
+Route::post('multiFormData/store', 'MultiFormController@store');
+Route::get('multiFormData/fetch', 'MultiFormController@fetch');
+
+
+Route::post('oop-form-one', 'TutorialController@oopFormOne');
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

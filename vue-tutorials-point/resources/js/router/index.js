@@ -13,6 +13,10 @@ import CustomerDetails from "../components/project/CustomerDetails";
 import SpaComponent from "../components/project/SpaComponent";
 import SingleFormComponent from "../components/project/SingleFormComponent";
 import ContactFormComponent from "../components/project/ContactFormComponent";
+import MultiFormComponent from "../components/project/MultiFormComponent";
+import OopFormOne from "../components/oopForm/OopFormOne";
+import CalenderComponent from "../components/ComboProject/CalenderComponent";
+import demo from "../components/ComboProject/demo";
 
 const routes = [
     {
@@ -44,6 +48,12 @@ const routes = [
         path: '/binding',
         component: BindingComponent
     },
+    //------------oop-routes------
+
+    {
+        path: '/oop-form-one',
+        component: OopFormOne,
+    },
 
     // -----------project-routes----------
 
@@ -62,6 +72,22 @@ const routes = [
     {
         path: '/contact-form',
         component: ContactFormComponent
+    },
+
+    {
+        path: '/multi-form',
+        component: MultiFormComponent
+    },
+
+    // --------combo-project---------
+
+    {
+        path: '/calender',
+        component: CalenderComponent
+    },
+    {
+        path: '/demo',
+        component: demo
     }
 ]
 

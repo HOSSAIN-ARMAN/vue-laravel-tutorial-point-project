@@ -29,6 +29,13 @@
                             <b-dropdown-item to="/spa">SPA Project</b-dropdown-item>
                             <b-dropdown-item to="/single-form">Single Form Submit</b-dropdown-item>
                             <b-dropdown-item to="/contact-form">Contact Form</b-dropdown-item>
+                            <b-dropdown-item to="/multi-form">Multi Form</b-dropdown-item>
+                        </b-nav-item-dropdown>
+
+                        <!-- Navbar dropdowns Two-->
+                        <b-nav-item-dropdown text="OOP-Form" right>
+                            <b-dropdown-item to="/oop-form-one">OOP Form1</b-dropdown-item>
+
                         </b-nav-item-dropdown>
 
                         <li class="nav-item">
